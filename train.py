@@ -47,3 +47,45 @@ def read_annotation_data(annotation_file_path):
         "labels": labels,
         "boxes": boxes
     }
+
+
+# Build metadata for a dataset split
+#
+# Creates a Python dictionary containing:
+# - class labels
+# - bounding boxes
+# - paths to the corresponding images
+
+def build_metadata(split):
+
+    labels_dir = dataset_dir / split / "labels"
+    images_dir = dataset_dir / split / "images"
+
+    metadata = {
+        "labels": [],
+        "boxes": [],
+        "image/file_path": []
+    }
+
+    for annotation_file_path in labels_dir.glob("*.txt"):
+
+        annotation = read_annotation_data(
+            annotation_file_path
+        )
+
+        image_file_name = annotation_file_path.stem + ".jpg"
+        image_file_path = images_dir / image_file_name
+
+        metadata["labels"].append(
+            annotation["labels"]
+        )
+
+        metadata["boxes"].append(
+            annotation["boxes"]
+        )
+
+        metadata["image/file_path"].append(
+            str(image_file_path)
+        )
+
+    return metadata
