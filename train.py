@@ -19,3 +19,31 @@ CLASSES = {
     8: "Transverse Displaced",
     9: "Transverse",
 }
+
+# Read one YOLO annotation file
+#
+# YOLO format:
+# class_id x_center y_center width height
+
+def read_annotation_data(annotation_file_path):
+
+    with open(annotation_file_path, "r", encoding="utf-8") as f:
+        text = f.read()
+
+    labels = []
+    boxes = []
+
+    for line in text.splitlines():
+
+        values = line.split()
+
+        labels.append(int(values[0]))
+
+        boxes.append(
+            [float(value) for value in values[1:]]
+        )
+
+    return {
+        "labels": labels,
+        "boxes": boxes
+    }
