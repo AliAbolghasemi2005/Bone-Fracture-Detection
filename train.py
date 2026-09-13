@@ -89,3 +89,16 @@ def build_metadata(split):
         )
 
     return metadata
+
+metadata = build_metadata("train")
+
+print("Number of images:", len(metadata["image/file_path"]))
+
+print("\nFirst image path:")
+print(metadata["image/file_path"][0])
+
+print("\nFirst labels:")
+print(metadata["labels"][0])
+
+print("\nFirst boxes:")
+print(metadata["boxes"][0])
