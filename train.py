@@ -90,15 +90,21 @@ def build_metadata(split):
 
     return metadata
 
-metadata = build_metadata("train")
 
-print("Number of images:", len(metadata["image/file_path"]))
+# Load an image from its path
 
-print("\nFirst image path:")
-print(metadata["image/file_path"][0])
+def load_image(sample):
 
-print("\nFirst labels:")
-print(metadata["labels"][0])
+    image_path = sample.pop("image/file_path")
 
-print("\nFirst boxes:")
-print(metadata["boxes"][0])
+    image = tf.io.read_file(
+        image_path
+    )
+
+    image = tf.image.decode_jpeg(
+        image
+    )
+
+    sample["image"] = image
+
+    return sample
