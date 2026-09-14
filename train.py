@@ -126,3 +126,16 @@ def convert_boxes(sample):
     )
 
     return sample
+
+
+# Put the annotations into the format expected by Keras
+
+def decode_dataset(sample):
+
+    return {
+        "images": sample["image"],
+        "bounding_boxes": {
+            "boxes": sample["boxes"],
+            "labels": sample["labels"],
+        }
+    }
