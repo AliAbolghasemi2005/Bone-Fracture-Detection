@@ -167,3 +167,14 @@ model = keras_hub.models.RetinaNetObjectDetector(
     num_classes=len(CLASSES),
     preprocessor=preprocessor
 )
+
+# Check the preprocessing configuration.
+
+print("Image converter:")
+print(preprocessor.image_converter)
+
+print("\nImage size:")
+print(preprocessor.image_converter.image_size)
+
+print("\nBounding box format:")
+print(preprocessor.image_converter.bounding_box_format)
