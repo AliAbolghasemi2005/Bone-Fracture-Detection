@@ -108,3 +108,21 @@ def load_image(sample):
     sample["image"] = image
 
     return sample
+
+
+# Convert YOLO boxes to yxyx pixel coordinates that RetinaNet needs
+
+def convert_boxes(sample):
+
+    height = tf.shape(sample["image"])[0]
+    width = tf.shape(sample["image"])[1]
+
+    sample["boxes"] = keras.utils.bounding_boxes.convert_format(
+        sample["boxes"],
+        source="rel_center_xywh",
+        target="yxyx",
+        height=height,
+        width=width,
+    )
+
+    return sample
