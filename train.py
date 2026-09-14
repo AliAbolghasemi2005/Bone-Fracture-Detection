@@ -139,3 +139,14 @@ def decode_dataset(sample):
             "labels": sample["labels"],
         }
     }
+
+
+# Convert the Keras bounding-box structure into
+# the (images, targets) format expected by model.fit()
+
+def convert_to_tuple(record):
+
+    return record["images"], {
+        "boxes": record["bounding_boxes"]["boxes"],
+        "labels": record["bounding_boxes"]["labels"],
+    }
