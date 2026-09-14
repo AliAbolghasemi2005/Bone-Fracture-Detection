@@ -150,3 +150,20 @@ def convert_to_tuple(record):
         "boxes": record["bounding_boxes"]["boxes"],
         "labels": record["bounding_boxes"]["labels"],
     }
+
+
+# Load the pretrained RetinaNet backbone
+
+backbone = keras_hub.models.Backbone.from_preset(
+    "hf://keras/retinanet_resnet50_fpn_coco"
+)
+
+preprocessor = keras_hub.models.RetinaNetObjectDetectorPreprocessor.from_preset(
+    "hf://keras/retinanet_resnet50_fpn_coco"
+)
+
+model = keras_hub.models.RetinaNetObjectDetector(
+    backbone=backbone,
+    num_classes=len(CLASSES),
+    preprocessor=preprocessor
+)
