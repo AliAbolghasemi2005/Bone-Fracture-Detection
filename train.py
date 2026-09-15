@@ -308,3 +308,8 @@ model.fit(
     epochs=5,
     callbacks=[checkpoint]
 )
+
+
+# Evaluate the model
+
+model.evaluate(test_dataset)
