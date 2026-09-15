@@ -178,3 +178,11 @@ print(preprocessor.image_converter.image_size)
 
 print("\nBounding box format:")
 print(preprocessor.image_converter.bounding_box_format)
+
+
+# Pad the annotations so every sample has the same number of boxes
+
+max_box_layer = keras.layers.MaxNumBoundingBoxes(
+    max_number=100,
+    bounding_box_format="yxyx"
+)
