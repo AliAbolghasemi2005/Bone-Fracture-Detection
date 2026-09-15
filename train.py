@@ -20,6 +20,7 @@ CLASSES = {
     9: "Transverse",
 }
 
+
 # Read one YOLO annotation file
 #
 # YOLO format:
@@ -186,3 +187,89 @@ max_box_layer = keras.layers.MaxNumBoundingBoxes(
     max_number=100,
     bounding_box_format="yxyx"
 )
+
+
+# This function applies the entire input pipeline:
+#
+# metadata
+#     ↓
+# RaggedTensors
+#     ↓
+# TensorFlow Dataset
+#     ↓
+# load images
+#     ↓
+# convert bounding boxes
+#     ↓
+# Keras bounding-box structure
+#     ↓
+# pad boxes to 100
+#     ↓
+# batch
+#     ↓
+# (images, targets)
+#     ↓
+# prefetch
+
+def build_dataset(split):
+
+    # Build metadata from the selected dataset split.
+    metadata = build_metadata(split)
+
+    # Convert variable-length annotations into RaggedTensors.
+    metadata["labels"] = tf.ragged.constant(
+        metadata["labels"]
+    )
+
+    metadata["boxes"] = tf.ragged.constant(
+        metadata["boxes"],
+        ragged_rank=1
+    )
+
+    # Create a TensorFlow Dataset from the metadata.
+    dataset = tf.data.Dataset.from_tensor_slices(
+        metadata
+    )
+
+    # Load the actual image files.
+    dataset = dataset.map(
+        load_image,
+        num_parallel_calls=tf.data.AUTOTUNE
+    )
+
+    # Convert YOLO bounding boxes to yxyx format.
+    dataset = dataset.map(
+        convert_boxes,
+        num_parallel_calls=tf.data.AUTOTUNE
+    )
+
+    # Rearrange the sample into Keras bounding-box format.
+    dataset = dataset.map(
+        decode_dataset,
+        num_parallel_calls=tf.data.AUTOTUNE
+    )
+
+    # Pad annotations to a fixed maximum number of boxes.
+    dataset = dataset.map(
+        max_box_layer,
+        num_parallel_calls=tf.data.AUTOTUNE
+    )
+
+    # Group samples into batches.
+    dataset = dataset.batch(
+        4,
+        drop_remainder=True
+    )
+
+    # Convert each batch into the format expected by model.fit().
+    dataset = dataset.map(
+        convert_to_tuple,
+        num_parallel_calls=tf.data.AUTOTUNE
+    )
+
+    # Prepare future batches while the current batch is being processed.
+    dataset = dataset.prefetch(
+        tf.data.AUTOTUNE
+    )
+
+    return dataset
