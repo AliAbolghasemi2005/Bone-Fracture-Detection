@@ -273,3 +273,10 @@ def build_dataset(split):
     )
 
     return dataset
+
+
+# Build training and validation and test datasets
+
+train_dataset = build_dataset("train")
+valid_dataset = build_dataset("valid")
+test_dataset = build_dataset("test")
