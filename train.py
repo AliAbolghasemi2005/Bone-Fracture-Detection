@@ -294,7 +294,7 @@ model.compile(
 # Save the model whenever validation loss improves
 
 checkpoint = keras.callbacks.ModelCheckpoint(
-    "retinanet_best.keras",
+    "outputs/retinanet_best.keras",
     monitor="val_loss",
     save_best_only=True,
 )
