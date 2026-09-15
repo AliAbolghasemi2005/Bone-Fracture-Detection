@@ -280,3 +280,31 @@ def build_dataset(split):
 train_dataset = build_dataset("train")
 valid_dataset = build_dataset("valid")
 test_dataset = build_dataset("test")
+
+
+# Configure the model for training
+
+model.compile(
+    box_loss=keras.losses.MeanAbsoluteError(
+        reduction="sum"
+    )
+)
+
+
+# Save the model whenever validation loss improves
+
+checkpoint = keras.callbacks.ModelCheckpoint(
+    "retinanet_best.keras",
+    monitor="val_loss",
+    save_best_only=True,
+)
+
+
+# Train the model
+
+model.fit(
+    train_dataset,
+    validation_data=valid_dataset,
+    epochs=5,
+    callbacks=[checkpoint]
+)
