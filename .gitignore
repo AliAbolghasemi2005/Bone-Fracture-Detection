@@ -1,2 +1,4 @@
 Bone-Fractures-Detection-Dataset/
 outputs/
+__pycache__/
+archive/
